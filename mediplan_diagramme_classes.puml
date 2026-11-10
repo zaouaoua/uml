@@ -1,6 +1,7 @@
-@startuml MediPlan
+@startuml MediPlan_Simple
 
 
+package "Utilisateur" {
 
 abstract class Personne {
   - nom : String
@@ -18,21 +19,26 @@ class Medecin {
   - specialite : String
   + realiserConsultation(rdv : RendezVous) : Consultation
 }
+}
+package "Etablissement" {
+
 
 class Clinique {
   - nom : String
   - adresse : String
 }
+}
+package "Planification" {
+
 
 class Creneau {
   - dateDebut : DateTime
   - dateFin : DateTime
-  - estLibre : boolean
+  + estLibre() : estLibre 
 }
 
 class RendezVous {
   - motif : String
-  - statut : StatutRendezVous
   + confirmer() : void
   + annuler() : void
 }
@@ -52,12 +58,15 @@ class Ordonnance {
   - dateValidite : Date
 }
 
+
 enum StatutRendezVous {
   EN_ATTENTE
   CONFIRME
   ANNULE
   HONORE
 }
+}
+
 
 Personne <|-- Patient
 Personne <|-- Medecin
@@ -70,5 +79,5 @@ Patient "1" *-- "1" DossierMedical : possède >
 DossierMedical "1" *-- "0..*" Consultation : contient >
 RendezVous "1" -- "0..1" Consultation : donne lieu à >
 Consultation "1" *-- "0..1" Ordonnance : produit >
-
+RendezVous "1" *-- "0..1" StatutRendezVous : statut >
 @enduml
