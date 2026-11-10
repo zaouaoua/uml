@@ -1,0 +1,74 @@
+@startuml MediPlan_Simple
+
+
+
+abstract class Personne {
+  - nom : String
+  - prenom : String
+  - email : String
+  - telephone : String
+}
+
+class Patient {
+  - numeroSecu : String
+  + prendreRendezVous(creneau : Creneau) : RendezVous
+}
+
+class Medecin {
+  - specialite : String
+  + realiserConsultation(rdv : RendezVous) : Consultation
+}
+
+class Clinique {
+  - nom : String
+  - adresse : String
+}
+
+class Creneau {
+  - dateDebut : DateTime
+  - dateFin : DateTime
+  - estLibre : boolean
+}
+
+class RendezVous {
+  - motif : String
+  - statut : StatutRendezVous
+  + confirmer() : void
+  + annuler() : void
+}
+
+class DossierMedical {
+  - dateCreation : Date
+  - allergies : String
+}
+
+class Consultation {
+  - date : DateTime
+  - diagnostic : String
+}
+
+class Ordonnance {
+  - contenu : String
+  - dateValidite : Date
+}
+
+enum StatutRendezVous {
+  EN_ATTENTE
+  CONFIRME
+  ANNULE
+  HONORE
+}
+
+Personne <|-- Patient
+Personne <|-- Medecin
+
+Clinique "1..*" o-- "0..*" Medecin : emploie >
+Medecin "1" *-- "0..*" Creneau : propose >
+Patient "1" -- "0..*" RendezVous : prend >
+RendezVous "0..1" --> "1" Creneau : occupe >
+Patient "1" *-- "1" DossierMedical : possède >
+DossierMedical "1" *-- "0..*" Consultation : contient >
+RendezVous "1" -- "0..1" Consultation : donne lieu à >
+Consultation "1" *-- "0..1" Ordonnance : produit >
+
+@enduml
